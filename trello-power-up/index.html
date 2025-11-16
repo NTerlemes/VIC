@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Trello Power-Up</title>
+    <script src="https://p.trellocdn.com/power-up.min.js"></script>
+</head>
+<body>
+    <script>
+        // Initialize Trello Power-Up
+        var t = window.TrelloPowerUp.iframe({
+            // Power-Up capabilities
+            'card-buttons': function(t, options) {
+                return [{
+                    icon: 'https://cdn.glitch.com/1b42d7fe-bda8-4af8-a6c8-eff0cea9a08c%2Frocket-ship.png?1514949560427',
+                    text: 'PRD Info',
+                    callback: function(t) {
+                        return t.popup({
+                            title: 'PRD Information',
+                            url: './prd-popup.html',
+                            height: 400
+                        });
+                    }
+                }];
+            },
+            'card-badges': function(t, options) {
+                return t.card('all').then(function(card) {
+                    // You can add badges here based on card data
+                    return [];
+                });
+            },
+            'card-detail-badges': function(t, options) {
+                return [];
+            },
+            'card-from-url': function(t, options) {
+                // Handle card creation from URL
+                return {
+                    name: options.url
+                };
+            },
+            'format-url': function(t, options) {
+                return {
+                    icon: 'https://cdn.glitch.com/1b42d7fe-bda8-4af8-a6c8-eff0cea9a08c%2Frocket-ship.png?1514949560427',
+                    text: 'View PRD'
+                };
+            },
+            'show-settings': function(t, options) {
+                return t.popup({
+                    title: 'Settings',
+                    url: './settings.html',
+                    height: 200
+                });
+            }
+        });
+
+        // Handle postMessage communication from Trello
+        window.addEventListener('message', function(event) {
+            // Verify origin for security
+            if (event.origin !== 'https://trello.com' && event.origin !== 'https://*.trello.com') {
+                return;
+            }
+            
+            // Handle messages from Trello
+            if (event.data && event.data.type) {
+                console.log('Received message from Trello:', event.data);
+                // Process messages as needed
+            }
+        });
+
+        // Notify Trello that Power-Up is ready
+        t.render(function() {
+            console.log('Trello Power-Up initialized');
+        });
+    </script>
+</body>
+</html>
+
